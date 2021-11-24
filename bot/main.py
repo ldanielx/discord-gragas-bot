@@ -9,7 +9,7 @@ load_dotenv()
 bot_prefix = os.getenv("bot_prefix")
 token = os.getenv("token")
 
-bot = commands.Bot(command_bot_prefix=bot_prefix, case_insensitive=True)
+bot = commands.Bot(command_prefix=bot_prefix, case_insensitive=True)
 
 
 @bot.event
@@ -31,7 +31,7 @@ async def dado(ctx, number):
         await ctx.send("Põe um número acima de 0, burro")
 
     roll = random.randint(1, int(number))
-    await ctx.send(f"O número que saiu no dado foi: {roll}")
+    await ctx.send(f"🎲: {roll}")
 
 
 bot.run(token)
