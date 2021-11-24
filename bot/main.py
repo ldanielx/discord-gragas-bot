@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-prefix = "$"
+prefix = os.getenv("prefix")
 client = commands.Bot(command_prefix = prefix , case_insensitive = True)
 
 token = os.getenv("token")
