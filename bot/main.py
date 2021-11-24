@@ -6,26 +6,26 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-prefix = os.getenv("prefix")
+bot_prefix = os.getenv("bot_prefix")
 token = os.getenv("token")
 
-client = commands.Bot(command_prefix=prefix, case_insensitive=True)
+bot = commands.Bot(command_bot_prefix=bot_prefix, case_insensitive=True)
 
 
-@client.event
+@bot.event
 async def on_ready():
     print(
         f"\n---------------------------------------------------\n"
         f"Bot Ready!\n"
-        f"Current Prefix: {prefix}\n"
+        f"Current bot_prefix: {bot_prefix}\n"
         f"---------------------------------------------------"
     )
-    await client.change_presence(
+    await bot.change_presence(
         activity=discord.Activity(type=discord.ActivityType.listening, n="")
     )
 
 
-@client.command()
+@bot.command()
 async def dado(ctx, number):
     if int(number) <= 0:
         await ctx.send("Põe um número acima de 0, burro")
@@ -34,4 +34,4 @@ async def dado(ctx, number):
     await ctx.send(f"O número que saiu no dado foi: {roll}")
 
 
-client.run(token)
+bot.run(token)
