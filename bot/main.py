@@ -26,10 +26,11 @@ async def on_ready():
 
 
 @client.command()
-async def dado(ctx, numero):
-    if int(numero) <= 0:
+async def dado(ctx, number):
+    if int(number) <= 0:
         await ctx.send("Põe um número acima de 0, burro")
-    roll = random.randint(1, int(numero))
+
+    roll = random.randint(1, int(number))
     await ctx.send(f"O número que saiu no dado foi: {roll}")
 
 
