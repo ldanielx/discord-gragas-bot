@@ -10,6 +10,7 @@ bot_prefix = os.getenv("bot_prefix")
 token = os.getenv("token")
 
 bot = commands.Bot(command_prefix=bot_prefix, case_insensitive=True)
+bot.load_extension("music")
 
 
 @bot.event
