@@ -5,6 +5,7 @@ from discord.utils import get
 from youtube_dl import YoutubeDL
 from asyncio import run_coroutine_threadsafe
 import requests
+import random
 
 
 class Music(commands.Cog, name="Music"):
@@ -40,11 +41,16 @@ class Music(commands.Cog, name="Music"):
             else:
                 info = ydl.extract_info(arg, download=False)
 
-        titles = []
+        titles = [
+            "🎵 Olha a saideira! 🍺",
+            "🍺 Toma uma gelada! 🎵",
+            "🎵 Happy hour to chegando! 🍺",
+            "🍺 Ta na hora de encher o pote! 🎵",
+        ]
 
         embed = (
             Embed(
-                title="🎵 Olha a saideira! 🍺",
+                title=(random.choice(titles)),
                 description=f"[{info['title']}]({info['webpage_url']})",
                 color=0xDB3498,
             )
