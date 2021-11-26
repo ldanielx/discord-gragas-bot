@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import random
 import os
 from dotenv import load_dotenv
 
@@ -11,6 +10,7 @@ token = os.getenv("token")
 
 bot = commands.Bot(command_prefix=bot_prefix, case_insensitive=True)
 bot.load_extension("music")
+bot.load_extension("utils")
 
 
 @bot.event
@@ -22,17 +22,11 @@ async def on_ready():
         f"---------------------------------------------------"
     )
     await bot.change_presence(
-        activity=discord.Activity(type=discord.ActivityType.listening, n="")
+        activity=discord.Activity(
+            type=discord.ActivityType.watching,
+            n="https://www.youtube.com/watch?v=UMfpkBRH3ro",
+        )
     )
-
-
-@bot.command()
-async def dado(ctx, number):
-    if int(number) <= 0:
-        await ctx.send("Põe um número acima de 0, burro")
-
-    roll = random.randint(1, int(number))
-    await ctx.send(f"🎲: {roll}")
 
 
 bot.run(token)

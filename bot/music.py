@@ -40,18 +40,20 @@ class Music(commands.Cog, name="Music"):
             else:
                 info = ydl.extract_info(arg, download=False)
 
+        titles = []
+
         embed = (
             Embed(
-                title="🎵 Now playing:",
+                title="🎵 Olha a saideira! 🍺",
                 description=f"[{info['title']}]({info['webpage_url']})",
-                color=0x3498DB,
+                color=0xDB3498,
             )
-            .add_field(name="Duration", value=Music.parse_duration(info["duration"]))
-            .add_field(name="Requested By", value=author)
+            .add_field(name="Duração", value=Music.parse_duration(info["duration"]))
+            .add_field(name="Pedido por", value=author)
             .add_field(
-                name="Author", value=f"[{info['uploader']}]({info['channel_url']})"
+                name="Autor", value=f"[{info['uploader']}]({info['channel_url']})"
             )
-            .add_field(name="Queue", value=f"No queued musics")
+            .add_field(name="Fila", value=f"Não há musicas na fila")
             .set_thumbnail(url=info["thumbnail"])
         )
 
@@ -133,10 +135,10 @@ class Music(commands.Cog, name="Music"):
         if voice.is_connected():
             await ctx.message.delete()
             if voice.is_playing():
-                await ctx.send("⏸️ Music paused", delete_after=5.0)
+                await ctx.send("⏸️ Música pausada", delete_after=5.0)
                 voice.pause()
             else:
-                await ctx.send("⏯️ Music resumed", delete_after=5.0)
+                await ctx.send("⏯️ Música retomada", delete_after=5.0)
                 voice.resume()
 
     @commands.command(brief="!skip", description="Skip the current video")
@@ -144,12 +146,10 @@ class Music(commands.Cog, name="Music"):
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         if voice.is_playing():
             await ctx.message.delete()
-            await ctx.send("⏭️ Musique skipped", delete_after=5.0)
+            await ctx.send("⏭️ Música pulada", delete_after=5.0)
             voice.stop()
 
-    @commands.command(
-        brief="!remove [index]", description="Remove a song from the queue"
-    )
+    @commands.command(brief="!remove [index]", description="Música removida da fila")
     async def remove(self, ctx, *, num: int):
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         if voice.is_playing():
