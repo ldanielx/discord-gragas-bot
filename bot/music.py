@@ -187,7 +187,8 @@ class Music(commands.Cog, name="Music"):
         server = ctx.message.guild.voice_client
         voice = get(self.bot.voice_clients, guild=ctx.guild)
 
-        voice.stop(ctx.guild)
+        if voice.is_playing():
+            voice.stop()
 
         exit_sound = Music.search(
             ctx.author.mention, "Dog Bark Sound Effect HD [No Copyright]"
