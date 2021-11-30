@@ -186,6 +186,9 @@ class Music(commands.Cog, name="Music"):
     async def leave(self, ctx):
         server = ctx.message.guild.voice_client
         voice = get(self.bot.voice_clients, guild=ctx.guild)
+
+        voice.stop(ctx.guild)
+
         exit_sound = Music.search(
             ctx.author.mention, "Dog Bark Sound Effect HD [No Copyright]"
         )
