@@ -14,3 +14,4 @@ typing-extensions==4.0.0
 urllib3==1.26.7
 yarl==1.7.2
 youtube-dl==2021.6.6
+PyNaCl==1.4.0
