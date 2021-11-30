@@ -99,6 +99,17 @@ class Music(commands.Cog, name="Music"):
             voice.is_playing()
         else:
             try:
+                exit_sound = Music.search(
+                    ctx.author.mention, "Dog Bark Sound Effect HD [No Copyright]"
+                )
+
+                voice.play(
+                    FFmpegPCMAudio(
+                        exit_sound["source"],
+                        **Music.FFMPEG_OPTIONS,
+                    )
+                )
+
                 run_coroutine_threadsafe(voice.disconnect(), self.bot.loop)
                 run_coroutine_threadsafe(
                     self.message[ctx.guild].delete(), self.bot.loop
@@ -174,6 +185,17 @@ class Music(commands.Cog, name="Music"):
     @commands.command(brief="!leave", description="Leave bot from channel")
     async def leave(self, ctx):
         server = ctx.message.guild.voice_client
+        voice = get(self.bot.voice_clients, guild=ctx.guild)
+        exit_sound = Music.search(
+            ctx.author.mention, "Dog Bark Sound Effect HD [No Copyright]"
+        )
+
+        voice.play(
+            FFmpegPCMAudio(
+                exit_sound["source"],
+                **Music.FFMPEG_OPTIONS,
+            )
+        )
         await server.disconnect()
 
 
