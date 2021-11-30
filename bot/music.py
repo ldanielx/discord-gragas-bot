@@ -13,7 +13,7 @@ class Music(commands.Cog, name="Music"):
     Can be used by anyone and allows you to listen to music or videos.
     """
 
-    YDL_OPTIONS = {"format": "bestaudio", "noplaylist": "True"}
+    YDL_OPTIONS = {"format": "bestaudio", "noplaylist": "True", "verbose": "True"}
     FFMPEG_OPTIONS = {
         "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
         "options": "-vn",
