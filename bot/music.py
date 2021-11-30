@@ -133,6 +133,7 @@ class Music(commands.Cog, name="Music"):
                 }
             ]
             self.song_queue[ctx.guild].append(song)
+            print(f"Song: {song['source']}")
             self.message[ctx.guild] = await ctx.send(embed=song["embed"])
 
             voice.play(
