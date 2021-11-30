@@ -198,9 +198,9 @@ class Music(commands.Cog, name="Music"):
             FFmpegPCMAudio(
                 exit_sound["source"],
                 **Music.FFMPEG_OPTIONS,
+                after=lambda e: await server.disconnect(),
             )
         )
-        await server.disconnect()
 
 
 def setup(bot):
