@@ -115,6 +115,7 @@ class Music(commands.Cog, name="Music"):
         channel = ctx.author.voice.channel
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         song = Music.search(ctx.author.mention, video)
+        bonk_sound = Music.search(ctx.author.mention, "Bonk Sound Effect #2")
 
         if voice and voice.is_connected():
             await voice.move_to(channel)
@@ -125,20 +126,13 @@ class Music(commands.Cog, name="Music"):
         await ctx.message.delete()
 
         if not voice.is_playing():
-            self.song_queue[ctx.guild] = [
-                {
-                    "embed": "",
-                    "source": "https://r4---sn-uxaxh5g-bpbed.googlevideo.com/videoplayback?expire=1638160228&ei=BAOkYcnPG7by1sQPyIaU0AM&ip=189.104.180.227&id=o-ABbG8hWAMlznYVc60PCDVB6qEYnEjtNviZIMlklm6jhR&itag=249&source=youtube&requiressl=yes&mh=v6&mm=31%2C29&mn=sn-uxaxh5g-bpbed%2Csn-uxaxh5g-jo4l&ms=au%2Crdu&mv=m&mvi=4&pl=18&initcwndbps=291250&vprv=1&mime=audio%2Fwebm&ns=T7wSslLfG0do3gu88weTw6QG&gir=yes&clen=3853&dur=1.861&lmt=1617063114950664&mt=1638138299&fvip=4&keepalive=yes&fexp=24001373%2C24007246&beids=23886210&c=WEB&txp=5311222&n=kDpeXptGjDKIhudF&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&sig=AOq0QJ8wRAIgI6dsjXYdJYBo8f60iHQhldAHCcjNfRNh5zsyUCCSgTgCICiL0k-3lkjKjAyNfw7K8MWNywfN4MG5fHhOqdTmQP8I&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgftEYsjJUf3IgEENmry9sVBBn0QMI5pt-15RbmSkJMlgCIQC2X7BWAHebHzN6P5a3PqRrQkYRL7bykI2qDMjjTID7bw%3D%3D",
-                    "title": "bonk",
-                }
-            ]
+            self.song_queue[ctx.guild] = [bonk_sound]
             self.song_queue[ctx.guild].append(song)
-            print(f"Song: {song['source']}")
             self.message[ctx.guild] = await ctx.send(embed=song["embed"])
 
             voice.play(
                 FFmpegPCMAudio(
-                    self.song_queue[ctx.guild][0]["source"],
+                    bonk_sound["source"],
                     **Music.FFMPEG_OPTIONS,
                 ),
                 after=lambda e: self.play_next(ctx),
