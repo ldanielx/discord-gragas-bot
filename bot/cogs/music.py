@@ -1,9 +1,10 @@
 from discord import Embed, FFmpegPCMAudio
 from discord.ext import commands
 from discord.utils import get
-
 from youtube_dl import YoutubeDL
 from asyncio import run_coroutine_threadsafe
+
+import time
 import requests
 import random
 
@@ -81,7 +82,7 @@ class Music(commands.Cog, name="Music"):
             if len(self.song_queue[ctx.guild]) > 1
             else "Não há musicas na fila."
         )
-        embed.set_field_at(index=3, name="Queue:", value=content, inline=False)
+        embed.set_field_at(index=3, name="Fila:", value=content, inline=False)
         await self.message[ctx.guild].edit(embed=embed)
 
     def play_next(self, ctx):
@@ -99,18 +100,7 @@ class Music(commands.Cog, name="Music"):
             voice.is_playing()
         else:
             try:
-                exit_sound = Music.search(
-                    ctx.author.mention, "Dog Bark Sound Effect HD [No Copyright]"
-                )
-
-                voice.play(
-                    FFmpegPCMAudio(
-                        exit_sound["source"],
-                        **Music.FFMPEG_OPTIONS,
-                    )
-                )
-
-                run_coroutine_threadsafe(voice.disconnect(), self.bot.loop)
+                self.play_bark_sound_effect(ctx, voice)
                 run_coroutine_threadsafe(
                     self.message[ctx.guild].delete(), self.bot.loop
                 )
@@ -118,11 +108,11 @@ class Music(commands.Cog, name="Music"):
                 pass
 
     @commands.command(
+        name="play",
         aliases=["p"],
-        brief="!play [url/words]",
         description="Listen to a video from an url or from a youtube search",
     )
-    async def play(self, ctx, *, video: str):
+    async def _play(self, ctx, *, video: str):
         channel = ctx.author.voice.channel
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         song = Music.search(ctx.author.mention, video)
@@ -134,7 +124,6 @@ class Music(commands.Cog, name="Music"):
             voice = await channel.connect()
 
         await ctx.guild.me.edit(deafen=True)
-        await ctx.message.delete()
 
         if not voice.is_playing():
             self.song_queue[ctx.guild] = [bonk_sound]
@@ -154,8 +143,8 @@ class Music(commands.Cog, name="Music"):
             self.song_queue[ctx.guild].append(song)
             await self.edit_message(ctx)
 
-    @commands.command(brief="!pause", description="Pause the current video")
-    async def pause(self, ctx):
+    @commands.command(name="pause", description="Pause the current music")
+    async def _pause(self, ctx):
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         if voice.is_connected():
             await ctx.message.delete()
@@ -166,41 +155,48 @@ class Music(commands.Cog, name="Music"):
                 await ctx.send("⏯️ Música retomada", delete_after=5.0)
                 voice.resume()
 
-    @commands.command(brief="!skip", description="Skip the current video")
-    async def skip(self, ctx):
+    @commands.command(name="skip", description="Skip the current music", aliases=["sk"])
+    async def _skip(self, ctx):
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         if voice.is_playing():
             await ctx.message.delete()
             await ctx.send("⏭️ Música pulada", delete_after=5.0)
             voice.stop()
 
-    @commands.command(brief="!remove [index]", description="Música removida da fila")
-    async def remove(self, ctx, *, num: int):
+    @commands.command(
+        name="remove", description="Música removida da fila", aliases=["rm"]
+    )
+    async def _remove(self, ctx, *, num: int):
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         if voice.is_playing():
             del self.song_queue[ctx.guild][num]
             await ctx.message.delete()
             await self.edit_message(ctx)
 
-    @commands.command(brief="!leave", description="Leave bot from channel")
-    async def leave(self, ctx):
+    @commands.command(
+        name="leave", description="Leave bot from channel", aliases=["lv"]
+    )
+    async def _leave(self, ctx):
         server = ctx.message.guild.voice_client
         voice = get(self.bot.voice_clients, guild=ctx.guild)
+        self.play_bark_sound_effect(ctx, voice)
 
+    def play_bark_sound_effect(self, ctx, voice):
         if voice.is_playing():
             voice.stop()
 
         exit_sound = Music.search(
-            ctx.author.mention, "Dog Bark Sound Effect HD [No Copyright]"
+            ctx.author.mention,
+            "https://www.youtube.com/watch?v=b-fX44-tJHI&ab_channel=CoolSoundFX",
         )
 
-        voice.play(
-            FFmpegPCMAudio(
-                exit_sound["source"],
-                **Music.FFMPEG_OPTIONS,
-                after=lambda e: server.disconnect(),
-            )
-        )
+        voice.play(FFmpegPCMAudio(exit_sound["source"], **Music.FFMPEG_OPTIONS))
+
+        while voice.is_playing():
+            time.sleep(1)
+
+        if not voice.is_playing():
+            run_coroutine_threadsafe(voice.disconnect(), self.bot.loop),
 
 
 def setup(bot):

@@ -1,13 +1,15 @@
-from discord.ext import commands
 import random
+
+from discord.ext import commands
+from discord import Embed
 
 
 class Utils(commands.Cog, name="Utilidades"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
-    async def dado(self, ctx, number):
+    @commands.command(name="dado", description="Roll a dice")
+    async def _dado(self, ctx, number):
         if int(number) <= 0:
             await ctx.send("Põe um número acima de 0, burro")
 
